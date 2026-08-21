@@ -13,14 +13,14 @@ jobs:
     runs-on: macos-14
     timeout-minutes: 90
     env:
-      EXPECTED_SHA: 176428d5fc865f408f9d593edbaefa91242b9c4c
+      EXPECTED_SHA: f19b01e8b5a022207a862dec2c0d293e86158ecf
       BAZEL_REMOTE_USER: ""
       BAZEL_REMOTE_PASSWORD: ""
     steps:
       - name: Check out exact reviewed candidate
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
-          ref: 176428d5fc865f408f9d593edbaefa91242b9c4c
+          ref: f19b01e8b5a022207a862dec2c0d293e86158ecf
           persist-credentials: false
 
       - name: Verify exact source and credential-blind boundary
@@ -67,7 +67,7 @@ jobs:
       - name: Upload exact binary and provenance
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: dkt239-omp-darwin-arm64-176428d5
+          name: dkt239-omp-darwin-arm64-f19b01e8
           path: |
             packages/coding-agent/binaries/omp-darwin-arm64
             omp-darwin-arm64.sha256
