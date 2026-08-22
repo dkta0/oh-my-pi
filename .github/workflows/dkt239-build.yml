@@ -13,14 +13,14 @@ jobs:
     runs-on: macos-14
     timeout-minutes: 90
     env:
-      EXPECTED_SHA: f19b01e8b5a022207a862dec2c0d293e86158ecf
+      EXPECTED_SHA: eb55e0719957734d8ec98c1ba28f1aa136712ace
       BAZEL_REMOTE_USER: ""
       BAZEL_REMOTE_PASSWORD: ""
     steps:
       - name: Check out exact reviewed candidate
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
-          ref: f19b01e8b5a022207a862dec2c0d293e86158ecf
+          ref: eb55e0719957734d8ec98c1ba28f1aa136712ace
           persist-credentials: false
 
       - name: Verify exact source and credential-blind boundary
@@ -41,11 +41,23 @@ jobs:
       - name: Install locked dependencies
         run: bun install --frozen-lockfile
 
+      - name: Check TypeScript and formatting
+        run: bun run check:ts
+
       - name: Build Darwin arm64 native addon
         uses: ./.github/actions/bazel-natives
         with:
           targets: darwin-arm64
           cache-scope: dkt239-darwin-arm64
+
+      - name: Run focused browser contracts sequentially
+        run: |
+          bun test packages/coding-agent/test/tools/browser-cmux-tui-protocol.test.ts
+          bun test packages/coding-agent/test/tools/browser-cmux-kind.test.ts
+          bun test packages/coding-agent/test/tools/browser-cmux-release-mid-run.test.ts
+          bun test packages/coding-agent/test/tools/browser-cmux-socket.test.ts
+          bun test packages/coding-agent/test/tools/browser-open-lease.test.ts
+          bun test packages/coding-agent/test/tools/browser-lifecycle-leak.test.ts
 
       - name: Build exact Darwin arm64 OMP binary
         env:
@@ -67,7 +79,7 @@ jobs:
       - name: Upload exact binary and provenance
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: dkt239-omp-darwin-arm64-f19b01e8
+          name: dkt239-omp-darwin-arm64-eb55e071
           path: |
             packages/coding-agent/binaries/omp-darwin-arm64
             omp-darwin-arm64.sha256
